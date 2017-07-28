@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+		<title>Add Article</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
+		<link rel="stylesheet" href="../css/layout.css">
+		<script src="../js/jquery.js"></script>
+		<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<%- include partials/navigation.ejs %>
+		<br>
+
+		<div class="container">
+			<h3>Add Article</h3>
+			<form action="/articles/add" method="POST" id="addForm">
+				<div class="form-group">
+					<label for="title"><strong>Title</strong></label>
+					<input type="text" name="title" class="form-control" placeholder="Enter title...">
+				</div>
+				<div class="form-group">
+					<label for="author"><strong>Author</strong></label>
+					<input type="text" name="author" class="form-control" placeholder="Enter author name...">
+				</div>
+				<div class="form-group">
+					<label for="body"><strong>Body</strong></label>
+					<textarea type="text" name="body" class="form-control" placeholder="Enter body..."></textarea>
+				</div>
+				<input type="submit" class="btn btn-primary" value="Submit">
+			</form>
+		</div>
+		<br>
+		<hr>
+		<%- include partials/footer.ejs %>
+	</body>
+</html>
