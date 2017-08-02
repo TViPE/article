@@ -20,6 +20,12 @@ var Article = require('./models/article.js');
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(express.static('public'));
+// app.use(session({
+//   secret: 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: { secure: true }
+// }))
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,7 +33,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-
+//route
+var article = require('./routes/article.js');
+app.use('/article', article);
 
 app.listen(process.env.PORT || 3000, function(){
 	console.log("Listening on port 3000");
@@ -43,13 +51,14 @@ app.get('/', function (req, res){
 	})
 });
 
+/*
 // Add article form
-app.get('/articles/add', function (req, res){
+app.get('/article/add', function (req, res){
 	res.render('add_article');
 });
 
 // Add a new article to database
-app.post('/articles/add', function (req, res){
+app.post('/article/add', function (req, res){
 	var newArticle = new Article({
 		title: req.body.title,
 		author: req.body.author,
@@ -135,3 +144,5 @@ app.get('/article/delete/:id', function (req, res){
 		}
 	});
 });
+
+*/
