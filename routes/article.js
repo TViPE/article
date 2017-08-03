@@ -3,7 +3,7 @@ var router = express.Router();
 var Article = require('../models/article.js');
 
 router.get('/add', function (req, res){
-	res.render('../views/add_article');
+	res.render('add_article');
 });
 
 router.post('/add', function (req, res){
@@ -18,6 +18,7 @@ router.post('/add', function (req, res){
 			return;
 		}
 		console.log("A new article is saved to collection");
+		req.flash('success', 'A new article is saved to collection');
 		res.redirect('/');
 	})
 });
@@ -63,6 +64,7 @@ router.post('/edit/:id', function (req,res){
 					return;
 				} else {
 					console.log("Article id: "+ article._id + " has been updated");
+					req.flash('info', "Article id: "+ article._id + " has been updated");
 					res.redirect('/');
 				}
 			})
@@ -70,7 +72,7 @@ router.post('/edit/:id', function (req,res){
 	});
 });
 
-router.get('delete/:id', function (req,res){
+router.get('/delete/:id', function (req,res){
 	var deleteId = req.params.id;
 	Article.findById(deleteId, function (err, article){
 		if(err) {
@@ -82,7 +84,8 @@ router.get('delete/:id', function (req,res){
 					console.log(err);
 					return;
 				} else {
-					console.log('Article with id: ' + article.id + " has been removed");
+					console.log('Article with id: ' + article.id + ' has been removed');
+					req.flash('danger', 'Article with id: ' + article.id + ' has been removed');
 					res.redirect('/');
 				}
 			})
