@@ -13,7 +13,12 @@
 	<body>
 		<%- include partials/navigation.ejs %>
 		<br>
-		
+		<% errors.forEach(function(error){ %>
+			<div class="alert alert-danger container" role="alert">
+				<%= error.msg %> 
+			</div>
+		<% }); %>
+
 		<div class="container">
 			<h3>Edit Article</h3>
 			<form action="/article/edit/<%= article._id%>" method="POST" id="addForm">
