@@ -18,6 +18,7 @@ db.once('open', function(){
 })
 var app = express();
 var Article = require('./models/article.js');
+var User = require('./models/user.js');
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -61,9 +62,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
-//route
+//route - article
 var article = require('./routes/article.js');
 app.use('/article', article);
+
+//route - user
+var user = require('./routes/user.js');
+app.use('/user', user);
 
 app.listen(process.env.PORT || 3000, function(){
 	console.log("Listening on port 3000");
