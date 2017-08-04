@@ -42,13 +42,17 @@ router.post('/register', function (req, res){
 						console.log(err);
 					} else {
 						console.log('You have been registered');
-						res.redirect('/');
+						res.redirect('/user/login');
 					}
 				})
 			});
 		});
 	}
 
+});
+
+router.get('/login', function (req,res){
+	res.render('login');
 });
 
 module.exports = router;
