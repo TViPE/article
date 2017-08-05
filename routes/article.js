@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 var Article = require('../models/article.js');
 
+router.get('*', function (req, res, next){
+  res.locals.user = req.user || null;
+  next();
+});
+
 router.get('/add', function (req, res){
 	var errors = [];
 	res.render('add_article', {errors: errors});

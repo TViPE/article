@@ -1,8 +1,14 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var passport = require('passport');
 var router = express.Router();
 
 var User =  require('../models/user.js');
+
+router.get('*', function (req, res, next){
+  res.locals.user = req.user || null;
+  next();
+});
 
 router.get('/register', function (req,res){
 	var errors = [];
@@ -51,8 +57,21 @@ router.post('/register', function (req, res){
 
 });
 
+
 router.get('/login', function (req,res){
 	res.render('login');
 });
+
+router.post('/login',
+  passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/user/login',
+                                   failureFlash: true})
+);
+
+router.get('/logout', function (req,res){
+	req.logout();
+	res.redirect('/user/login');
+});
+
 
 module.exports = router;

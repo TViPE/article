@@ -2,9 +2,11 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 var session = require('express-session');
+var passport = require('passport');
 var flash = require('connect-flash');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/article');
+var config = require('./config/database');
+mongoose.connect(config.database);
 var db = mongoose.connection;
 
 //Check for db error
@@ -55,6 +57,12 @@ app.use(expressValidator({
     };
   }
 }));
+//Passport config
+require('./config/passport.js')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -70,9 +78,12 @@ app.use('/article', article);
 var user = require('./routes/user.js');
 app.use('/user', user);
 
-app.listen(process.env.PORT || 3000, function(){
-	console.log("Listening on port 3000");
+
+app.get('*', function (req, res, next){
+  res.locals.user = req.user || null;
+  next();
 });
+
 
 app.get('/', function (req, res){
 	Article.find({}, function (err, articles){
@@ -80,6 +91,11 @@ app.get('/', function (req, res){
 			console.log(err);
 			return;
 		}
+    console.log(req.user);
 		res.render('index', {articles: articles});
 	})
+});
+
+app.listen(process.env.PORT || 3000, function(){
+  console.log("Listening on port 3000");
 });
