@@ -1,20 +1,21 @@
 var express = require('express');
 var router = express.Router();
 var Article = require('../models/article.js');
+var User = require('../models/user.js');
 
 router.get('*', function (req, res, next){
   res.locals.user = req.user || null;
   next();
 });
 
-router.get('/add', function (req, res){
+router.get('/add', ensureAuthenticated, function (req, res){
 	var errors = [];
 	res.render('add_article', {errors: errors});
 });
 
 router.post('/add', function (req, res){
 	req.checkBody('title', 'Title cannot be empty').notEmpty();
-	req.checkBody('author', 'Author cannot be empty').notEmpty();
+	//req.checkBody('author', 'Author cannot be empty').notEmpty();
 	req.checkBody('body', 'Body cannot be empty').notEmpty();
 
 	var errors = req.validationErrors();
@@ -22,7 +23,7 @@ router.post('/add', function (req, res){
 
 		var newArticle = new Article({
 			title: req.body.title,
-			author: req.body.author,
+			author: req.user._id,
 			body: req.body.body
 		});
 		newArticle.save(function (err){
@@ -48,15 +49,20 @@ router.get('/:id', function (req, res){
 			console.log(err);
 			return;
 		} else {
-			//console.log(article.title);
-			res.render('article', {article: article});
+			User.findById(article.author, function (err, user){
+				if(err) {
+					console.log(err);
+				} else{
+					res.render('article', {article: article, author: user.name});
+				}
+			})
 		}
 	});
 });
 
-router.get('/edit/:id', function (req, res){
+router.get('/edit/:id', ensureAuthenticated, function (req, res){
 	var editId = req.params.id;
-	var errors = []
+	var errors = [];
 	Article.findById(editId, function (err, article){
 		if(err){
 			console.log(err);
@@ -75,13 +81,13 @@ router.post('/edit/:id', function (req,res){
 			return;
 		} else {
 			req.checkBody('title', 'Title cannot be empty').notEmpty();
-			req.checkBody('author', 'Author cannot be empty').notEmpty();
+			//req.checkBody('author', 'Author cannot be empty').notEmpty();
 			req.checkBody('body', 'Body cannot be empty').notEmpty();
 
 			var errors = req.validationErrors();
 			if(!errors){
 				article.title = req.body.title;
-				article.author = req.body.author;
+				//article.author = req.body.author;
 				article.body = req.body.body;
 				article.save(function(err){
 					if(err){
@@ -121,6 +127,15 @@ router.get('/delete/:id', function (req,res){
 		}
 	});
 });
+
+function ensureAuthenticated(req, res, next) {
+	if(req.isAuthenticated()){
+		return next();
+	} else {
+		req.flash('danger', 'Please login');
+		req.redirect('/user/login')
+	}
+}
 
 module.exports = router;
 
